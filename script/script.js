@@ -1,12 +1,12 @@
 const pickerButton = document.getElementById('color-picker')
 const colorList = document.getElementById('all-colors')
-const pickedColors = JSON.parse(localStorage.getItem("selected-colors")||"[]"); //empty array
-const showColors=()=>{
-	colorList.innerHTML=pickedColors.map(color=>
+const pickedColors = JSON.parse(localStorage.getItem("selected-colors") || "[]"); //empty array
+const showColors = () => {
+	colorList.innerHTML = pickedColors.map(color =>
 		`<li id="color" class="">
 
 					<span
-						class="text-blue-800 text-sm font-semibold inline-flex items-center p-2 rounded-full dark:bg-gray-700 dark:text-blue-400" style="background:${color}">
+						class="text-blue-800 text-sm font-semibold inline-flex items-center p-2 rounded-full dark:bg-gray-700 dark:text-blue-400" style="background:${color};">
 						<!-- svg area -->
 						<svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor"
 							viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -19,7 +19,8 @@ const showColors=()=>{
 					<span id="value">${color}</span>
 				</li>`
 	).join("");
-}
+};
+showColors();
 const activateEyeDropper = async () => {
 	try {
 		const eyeDropper = new EyeDropper(); //eyedropper added
@@ -27,11 +28,13 @@ const activateEyeDropper = async () => {
 			sRGBHex
 		} = await eyeDropper.open();
 		navigator.clipboard.writeText(sRGBHex) //copy value
-		pickedColors.push(sRGBHex) //pushing colors to the array
-		localStorage.setItem('selected-colors', JSON.stringify(pickedColors)) //storing to local storage
-		showColors();
+		if (!pickedColors.includes(sRGBHex)) { //if the color already exists
+			pickedColors.push(sRGBHex) //pushing colors to the array
+			localStorage.setItem('selected-colors', JSON.stringify(pickedColors)) //storing to local storage
+			showColors();
+		}
 	} catch (error) {
-		console.log(error)
+		console.log(error) //error catch
 	}
 }
 pickerButton.addEventListener('click', activateEyeDropper)
