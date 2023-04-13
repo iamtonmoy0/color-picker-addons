@@ -1,9 +1,16 @@
 const pickerButton = document.getElementById('color-picker')
 const colorList = document.getElementById('all-colors')
+const clearColor = document.getElementById('clearAll')
 const pickedColors = JSON.parse(localStorage.getItem("selected-colors") || "[]"); //empty array
+const copyColor = elem => {
+	navigator.clipboard.writeText(elem.dataset.color)
+	elem.innerText='Copied!!';
+	setTimeout(()=>elem.innerText=elem.dataset.color,1000)
+
+}
 const showColors = () => {
 	colorList.innerHTML = pickedColors.map(color =>
-		`<li id="color" class="">
+		`<li class="color" style="cursor:pointer;">
 
 					<span
 						class="text-blue-800 text-sm font-semibold inline-flex items-center p-2 rounded-full dark:bg-gray-700 dark:text-blue-400" style="background:${color};">
@@ -16,9 +23,15 @@ const showColors = () => {
 						</svg>
 						<span class="sr-only">Icon description</span>
 					</span>
-					<span id="value">${color}</span>
+					<span id="value" data-color="${color}">${color}</span>
 				</li>`
 	).join("");
+	// event for copy the color code
+	document.querySelectorAll('.color').forEach(li => {
+		li.addEventListener('click', e => copyColor(e.currentTarget.lastElementChild))
+		
+	})
+
 };
 showColors();
 const activateEyeDropper = async () => {
@@ -37,4 +50,9 @@ const activateEyeDropper = async () => {
 		console.log(error) //error catch
 	}
 }
+const clearAllColor=()=>{
+	pickedColors.length=0;
+	localStorage.setItem("selected-colors",JSON.stringify(pickedColors));
+}
 pickerButton.addEventListener('click', activateEyeDropper)
+clearColor.addEventListener('click',clearAllColor)
