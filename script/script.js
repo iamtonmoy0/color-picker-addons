@@ -26,6 +26,7 @@ const showColors = () => {
 					<span id="value" data-color="${color}">${color}</span>
 				</li>`
 	).join("");
+	document.querySelector('.picked-color').classList.remove("hidden"); //remove the element after color selected
 	// event for copy the color code
 	document.querySelectorAll('.color').forEach(li => {
 		li.addEventListener('click', e => copyColor(e.currentTarget.lastElementChild))
@@ -53,6 +54,7 @@ const activateEyeDropper = async () => {
 const clearAllColor=()=>{
 	pickedColors.length=0;
 	localStorage.setItem("selected-colors",JSON.stringify(pickedColors));
+	document.querySelector('.picked-color').classList.add('hidden')
 }
 pickerButton.addEventListener('click', activateEyeDropper)
 clearColor.addEventListener('click',clearAllColor)
