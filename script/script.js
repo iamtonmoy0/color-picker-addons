@@ -1,60 +1,293 @@
-const pickerButton = document.getElementById('color-picker')
-const colorList = document.getElementById('all-colors')
-const clearColor = document.getElementById('clearAll')
-const pickedColors = JSON.parse(localStorage.getItem("selected-colors") || "[]"); //empty array
-const copyColor = elem => {
-	navigator.clipboard.writeText(elem.dataset.color)
-	elem.innerText='Copied!!';
-	setTimeout(()=>elem.innerText=elem.dataset.color,1000)
+const pickerButton =
+	document.getElementById(
+		"color-picker"
+	);
+
+
+const colorList =
+	document.getElementById(
+		"all-colors"
+	);
+
+
+const clearButton =
+	document.getElementById(
+		"clearAll"
+	);
+
+
+const pickedSection =
+	document.getElementById(
+		"picked-color"
+	);
+
+
+const preview =
+	document.getElementById(
+		"preview"
+	);
+
+
+
+let colors=[];
+
+
+
+
+// Load history
+
+async function loadColors(){
+
+
+	const data =
+		await chrome.storage.local.get(
+			"colors"
+		);
+
+
+	colors =
+		data.colors || [];
+
+
+	renderColors();
+
 
 }
-const showColors = () => {
-	colorList.innerHTML = pickedColors.map(color =>
-		`<li class="color" style="cursor:pointer;">
 
-					<span
-						class="text-blue-800 text-sm font-semibold inline-flex items-center p-2 rounded-full dark:bg-gray-700 dark:text-blue-400" style="background:${color};">
-						<!-- svg area -->
-						<svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor"
-							viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-							<path fill-rule="evenodd"
-								d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-								clip-rule="evenodd"></path>
-						</svg>
-						<span class="sr-only">Icon description</span>
-					</span>
-					<span id="value" data-color="${color}">${color}</span>
-				</li>`
-	).join("");
-	document.querySelector('.picked-color').classList.remove("hidden"); //remove the element after color selected
-	// event for copy the color code
-	document.querySelectorAll('.color').forEach(li => {
-		li.addEventListener('click', e => copyColor(e.currentTarget.lastElementChild))
-		
-	})
 
-};
-showColors();
-const activateEyeDropper = async () => {
-	try {
-		const eyeDropper = new EyeDropper(); //eyedropper added
-		const {
-			sRGBHex
-		} = await eyeDropper.open();
-		navigator.clipboard.writeText(sRGBHex) //copy value
-		if (!pickedColors.includes(sRGBHex)) { //if the color already exists
-			pickedColors.push(sRGBHex) //pushing colors to the array
-			localStorage.setItem('selected-colors', JSON.stringify(pickedColors)) //storing to local storage
-			showColors();
-		}
-	} catch (error) {
-		console.log(error) //error catch
+
+
+// Save history
+
+async function saveColors(){
+
+
+	await chrome.storage.local.set({
+
+		colors:colors
+
+	});
+
+
+}
+
+
+
+
+// Copy HEX
+
+async function copyColor(hex){
+
+
+	await navigator.clipboard.writeText(hex);
+
+
+}
+
+
+
+
+// Render history
+
+function renderColors(){
+
+
+	if(colors.length===0){
+
+		pickedSection.classList.add(
+			"hidden"
+		);
+
+		return;
+
 	}
+
+
+
+	pickedSection.classList.remove(
+		"hidden"
+	);
+
+
+
+	colorList.innerHTML =
+
+		colors.map(color=>{
+
+
+			return `
+
+<li class="color-item"
+style="background:${color}">
+
+
+<span data-color="${color}">
+${color}
+</span>
+
+
+</li>
+
+`;
+
+
+		}).join("");
+
+
+
+
+
+	document
+		.querySelectorAll(
+			".color-item span"
+		)
+		.forEach(item=>{
+
+
+			item.onclick=async()=>{
+
+
+				await copyColor(
+					item.dataset.color
+				);
+
+
+				item.innerText =
+					"Copied ✓";
+
+
+
+				setTimeout(()=>{
+
+
+					item.innerText =
+						item.dataset.color;
+
+
+				},1000);
+
+
+
+			};
+
+
+		});
+
+
+
 }
-const clearAllColor=()=>{
-	pickedColors.length=0;
-	localStorage.setItem("selected-colors",JSON.stringify(pickedColors));
-	document.querySelector('.picked-color').classList.add('hidden')
+
+
+
+
+// Pick color
+
+async function pickColor(){
+
+
+	try{
+
+
+		const eyeDropper =
+			new EyeDropper();
+
+
+
+		const result =
+			await eyeDropper.open();
+
+
+
+		const hex =
+			result.sRGBHex;
+
+
+
+// preview
+
+		preview.style.background =
+			hex;
+
+
+		preview.innerText =
+			hex;
+
+
+
+
+// copy automatically
+
+		await copyColor(hex);
+
+
+
+
+
+// save history
+
+		if(!colors.includes(hex)){
+
+
+			colors.unshift(hex);
+
+
+			await saveColors();
+
+
+			renderColors();
+
+
+		}
+
+
+
+	}
+
+
+	catch(err){
+
+		console.log(
+			"Picker cancelled"
+		);
+
+	}
+
+
+
 }
-pickerButton.addEventListener('click', activateEyeDropper)
-clearColor.addEventListener('click',clearAllColor)
+
+
+
+
+// Clear
+
+async function clearColors(){
+
+
+	colors=[];
+
+
+	await chrome.storage.local.remove(
+		"colors"
+	);
+
+
+	renderColors();
+
+
+}
+
+
+
+
+
+pickerButton.onclick =
+	pickColor;
+
+
+clearButton.onclick =
+	clearColors;
+
+
+
+loadColors();
