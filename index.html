@@ -2,107 +2,422 @@
 <html lang="en">
 
 <head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Color Picker Pro</title>
 
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<title>Color Picker</title>
-
-	<link rel="stylesheet" href="./css/style.css">
-
+	<link rel="stylesheet" href="./css/style.css" />
 </head>
-
 
 <body>
 
-
 <div class="app">
 
+	<!-- ================= HEADER ================= -->
 
-	<!-- Header -->
+	<header class="header">
 
-	<div class="header">
-
-		<h1>
-			🎨 Color Picker
-		</h1>
+		<h1>🎨 Color Picker Pro</h1>
 
 		<p>
-			Pick colors from any website
+			Pick, Convert & Create Colors
 		</p>
 
-	</div>
+	</header>
 
 
+	<!-- ================= PREVIEW ================= -->
 
+	<section class="preview-card">
 
-	<!-- Picker Card -->
-
-	<div class="picker-card">
-
-
-		<div
-				id="preview"
-				class="preview">
+		<div id="preview" class="preview">
 
 			Select Color
 
 		</div>
 
+		<div class="preview-info">
 
+			<div>
 
-		<button id="color-picker">
+				<label>HEX</label>
 
-			Pick Color
+				<div class="copy-box">
 
-		</button>
+					<input
+							id="previewHex"
+							type="text"
+							readonly
+							value="#FFFFFF">
 
+					<button
+							id="copyHexPreview"
+							class="copy-btn">
 
-	</div>
+						📋
 
+					</button>
 
+				</div>
 
+			</div>
 
+			<div>
 
-	<!-- History -->
+				<label>RGBA</label>
 
+				<div class="copy-box">
 
-	<div
-			id="picked-color"
-			class="colors-section hidden">
+					<input
+							id="previewRGBA"
+							type="text"
+							readonly
+							value="rgba(255,255,255,1)">
 
+					<button
+							id="copyRGBAPreview"
+							class="copy-btn">
 
-		<div class="section-header">
+						📋
 
+					</button>
 
-			<h3>
-				Recent Colors
-			</h3>
+				</div>
 
-
-			<button id="clearAll">
-				Clear
-			</button>
-
+			</div>
 
 		</div>
 
+		<button id="color-picker" class="primary-btn">
+
+			🎯 Pick Color
+
+		</button>
+
+	</section>
 
 
-		<ul id="all-colors"></ul>
+
+	<!-- ================= CONVERTER ================= -->
+
+	<section class="card">
+
+		<div class="card-title">
+
+			🔄 HEX ⇄ RGBA Converter
+
+		</div>
+
+		<div class="converter">
+
+			<div class="converter-item">
+
+				<label>
+
+					HEX Color
+
+				</label>
+
+				<input
+						id="hexInput"
+						type="text"
+						placeholder="#3B82F6">
+
+			</div>
+
+			<div class="converter-item">
+
+				<label>
+
+					RGBA
+
+				</label>
+
+				<input
+						id="rgbaInput"
+						type="text"
+						placeholder="rgba(59,130,246,1)">
+
+			</div>
+
+		</div>
+
+		<div class="button-group">
+
+			<button id="convertHex">
+
+				HEX → RGBA
+
+			</button>
+
+			<button id="convertRGBA">
+
+				RGBA → HEX
+
+			</button>
+
+		</div>
+
+	</section>
 
 
-	</div>
+
+	<!-- ================= COLOR CREATOR ================= -->
+
+	<section class="card">
+
+		<div class="card-title">
+
+			🎨 Custom Color Creator
+
+		</div>
+
+		<div class="slider-group">
+
+			<label>
+
+				🔴 Red
+
+				<span id="rValue">
+
+                        255
+
+                    </span>
+
+			</label>
+
+			<input
+					type="range"
+					id="red"
+					min="0"
+					max="255"
+					value="255">
+
+		</div>
+
+		<div class="slider-group">
+
+			<label>
+
+				🟢 Green
+
+				<span id="gValue">
+
+                        255
+
+                    </span>
+
+			</label>
+
+			<input
+					type="range"
+					id="green"
+					min="0"
+					max="255"
+					value="255">
+
+		</div>
+
+		<div class="slider-group">
+
+			<label>
+
+				🔵 Blue
+
+				<span id="bValue">
+
+                        255
+
+                    </span>
+
+			</label>
+
+			<input
+					type="range"
+					id="blue"
+					min="0"
+					max="255"
+					value="255">
+
+		</div>
+
+		<div class="slider-group">
+
+			<label>
+
+				⚪ Alpha
+
+				<span id="aValue">
+
+                        1
+
+                    </span>
+
+			</label>
+
+			<input
+					type="range"
+					id="alpha"
+					min="0"
+					max="1"
+					step="0.01"
+					value="1">
+
+		</div>
+
+		<div id="creatorPreview"
+		     class="creator-preview">
+
+		</div>
+
+		<div class="creator-result">
+
+			<div>
+
+				<label>
+
+					HEX
+
+				</label>
+
+				<div class="copy-box">
+
+					<input
+							id="creatorHex"
+							readonly>
+
+					<button
+							id="copyCreatorHex"
+							class="copy-btn">
+
+						📋
+
+					</button>
+
+				</div>
+
+			</div>
+
+			<div>
+
+				<label>
+
+					RGBA
+
+				</label>
+
+				<div class="copy-box">
+
+					<input
+							id="creatorRGBA"
+							readonly>
+
+					<button
+							id="copyCreatorRGBA"
+							class="copy-btn">
+
+						📋
+
+					</button>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="button-group">
+
+			<button id="randomColor">
+
+				🎲 Random Color
+
+			</button>
+
+			<button id="saveColor">
+
+				⭐ Save Color
+
+			</button>
+
+		</div>
+
+	</section>
 
 
+
+	<!-- ================= HISTORY ================= -->
+
+	<section
+			id="picked-color"
+			class="card hidden">
+
+		<div class="section-header">
+
+			<h3>
+
+				🕒 Recent Colors
+
+			</h3>
+
+			<button id="clearAll">
+
+				Clear
+
+			</button>
+
+		</div>
+
+		<ul id="all-colors">
+
+		</ul>
+
+	</section>
+
+
+
+	<!-- ================= BUY ME A COFFEE ================= -->
+
+	<section class="support-card">
+
+		<div class="coffee-icon">
+
+			☕
+
+		</div>
+
+		<h3>
+
+			Enjoying Color Picker Pro?
+
+		</h3>
+
+		<p>
+
+			Your support helps me build more useful developer tools and keep this extension free.
+
+		</p>
+
+		<a
+				href="https://buymeacoffee.com/YOUR_USERNAME"
+				target="_blank"
+				id="buyCoffee">
+
+			❤️ Buy Me a Coffee
+
+		</a>
+
+	</section>
+
+
+
+	<!-- ================= AD ================= -->
+
+	<div id="py-ad"></div>
 
 </div>
 
-
-
-
 <script src="./script/script.js"></script>
-
 
 </body>
 
